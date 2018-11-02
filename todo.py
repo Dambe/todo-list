@@ -66,7 +66,7 @@ def todo(args):
         topic_win.refresh()
 
         # render todo list
-        todo_win = curses.newwin(height - 1 , (width // 4) * 3, 0, width // 4)
+        todo_win = curses.newwin(height - 1, (width // 4) * 3, 0, width // 4)
         todo_win.border()
         todo_win.addstr(1, 1, "This is a test")
         todo_win.refresh()
