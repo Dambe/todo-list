@@ -4,9 +4,24 @@
 import curses
 import datetime
 import time
+import os
 
 cmds = [ "^X", "^A", "^B" ]
 cmds_txt = [ "Exit\t", "A\t", "B\t" ]
+
+
+def render_topics(win):
+    dirname = os.path.dirname(__file__)
+    filename = os.path.join(dirname, "topics")
+
+    fd = open(filename, "r")
+
+    i = 1
+    for line in fd:
+        win.addstr(i, 1, line.rstrip())
+        i += 1
+
+    fd.close()
 
 
 def todo(args):
@@ -45,11 +60,13 @@ def todo(args):
         # render topic list
         topic_win = curses.newwin(height - 1, width // 4, 0, 0)
         topic_win.border()
-        topic_win.addstr(1, 1, "This is a test")
+
+        render_topics(topic_win)
+
         topic_win.refresh()
 
         # render todo list
-        todo_win = curses.newwin(height - 1 , (width // 4) * 3, 0, width // 4)
+        todo_win = curses.newwin(height - 1, (width // 4) * 3, 0, width // 4)
         todo_win.border()
         todo_win.addstr(1, 1, "This is a test")
         todo_win.refresh()
