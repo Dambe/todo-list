@@ -6,49 +6,35 @@ import datetime
 import time
 import os
 
+from topics import *
+
+t = Topics()
 cmds = [ "^X", "^L", "^B" ]
 cmds_txt = [ "Exit\t", "Topics menu\t", "B\t" ]
 
-topic_menu_active = False
-topic_menu_pos = 1
-num_topics = 99
-
 def eval_usr_input(key):
-    # TODO: remove global, good time to introduce classes
-    global topic_menu_active
-    global topic_menu_pos
 
     if key == 10:   # RETURN
-        if topic_menu_active == True:
-            topic_menu_active = False
+        if t.is_menu_active == True:
+            t.is_menu_active = False
     elif key == 12:   # ^L
-        topic_menu_active = True
+        t.is_menu_active = True
+        t.menu_pos = 1
     elif key == ord('j') or key == 258:      # down
-        topic_menu_pos += 1
-        if (topic_menu_pos > num_topics):
-            topic_menu_pos = num_topics
+        t.menu_pos += 1
+        if (t.menu_pos > t.num_topics):
+            t.menu_pos = t.num_topics
     elif key == ord('k') or key == 259:    # up
-        topic_menu_pos -= 1
-        if (topic_menu_pos < 1):
-            topic_menu_pos = 1
+        t.menu_pos -= 1
+        if (t.menu_pos < 1):
+            t.menu_pos = 1
 
 
 def render_topics(win):
-    # TODO: remove global
-    global num_topics
-
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, "topics")
-
-    # get num of topics
-    num_topics = sum(1 for l in open(filename, "r"))
-
-    # file is automatically closed after previos iteration, needs re-open
-    fd = open(filename, "r")
-
     i = 1
-    for line in open(filename, "r"):
-        if (i == topic_menu_pos) and (topic_menu_active == True):
+
+    for line in t.topic_names:
+        if (i == t.menu_pos) and (t.is_menu_active == True):
             win.attron(curses.color_pair(1))
             win.addstr(i, 1, line.rstrip())
             win.attroff(curses.color_pair(1))
