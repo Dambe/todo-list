@@ -21,3 +21,10 @@ class Topics:
 
         # get num of topics
         self.num_topics = len(self.topic_names)
+
+    def new_topic(self):
+        new_t = input("Topic name: ")
+
+        f = open(self.filepath, "a")
+        f.write(new_t)
+        f.close()
