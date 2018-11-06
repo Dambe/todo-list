@@ -9,17 +9,19 @@ import os
 from topics import *
 
 t = Topics()
-cmds = [ "^X", "^L", "^B" ]
-cmds_txt = [ "Exit\t", "Topics menu\t", "B\t" ]
+cmds = [ "^X", "^L", "^N" ]
+cmds_txt = [ "Exit\t", "Topics menu\t", "New topic\t" ]
 
 def eval_usr_input(key):
 
     if key == 10:   # RETURN
         if t.is_menu_active == True:
             t.is_menu_active = False
-    elif key == 12:   # ^L
+    elif key == 12: # ^L
         t.is_menu_active = True
         t.menu_pos = 1
+    elif key == 14: # ^N
+        t.new_topic(80, 80)
     elif key == ord('j') or key == 258:      # down
         t.menu_pos += 1
         if (t.menu_pos > t.num_topics):
