@@ -20,6 +20,12 @@ class BaseWindow:
         curses.start_color()
         curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
 
+        self.h, self.w = self.stdscr.getmaxyx()
+
+        # render topic list
+        self.topic_win = curses.newwin((self.h - 1), (self.w // 4), 0, 0)
+        self.topic_win.border()
+
 
 t = Topics()
 win = BaseWindow()
@@ -34,6 +40,8 @@ def eval_usr_input(key):
             t.is_menu_active = False
         elif (key == 14):                       # ^N
             t.new_topic(win.h, win.w)
+        elif (key == 4  ):                      # ^D
+            t.delete_topic()
         elif key == ord('j') or key == curses.KEY_DOWN:
             t.menu_pos += 1
             if (t.menu_pos > t.num_topics):
@@ -48,6 +56,7 @@ def eval_usr_input(key):
     if (key == 12):                             # ^L
         t.is_menu_active = True
         t.menu_pos = 1
+
 
 def render_status_bar():
     cursor_x = 0
@@ -69,17 +78,23 @@ def render_status_bar():
         cursor_x += len(tmp_cmds_txt[i]) + 1
 
 
-def render_topics(win):
+def render_topics():
     i = 1
+
+    topic_win = curses.newwin(win.h - 1, win.w // 4, 0, 0)
+    topic_win.border()
+
 
     for line in t.topic_names:
         if (i == t.menu_pos) and (t.is_menu_active == True):
-            win.attron(curses.color_pair(1))
-            win.addstr(i, 1, line.rstrip())
-            win.attroff(curses.color_pair(1))
+            topic_win.attron(curses.color_pair(1))
+            topic_win.addstr(i, 1, line.rstrip())
+            topic_win.attroff(curses.color_pair(1))
         else:
-            win.addstr(i, 1, line.rstrip())
+            topic_win.addstr(i, 1, line.rstrip())
         i += 1
+
+        topic_win.refresh()
 
 
 def todo(args):
@@ -96,13 +111,7 @@ def todo(args):
 
         win.stdscr.refresh()
 
-        # render topic list
-        topic_win = curses.newwin(win.h - 1, win.w // 4, 0, 0)
-        topic_win.border()
-
-        render_topics(topic_win)
-
-        topic_win.refresh()
+        render_topics()
 
         # render todo list
         todo_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
