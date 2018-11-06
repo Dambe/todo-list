@@ -24,8 +24,8 @@ class BaseWindow:
 t = Topics()
 win = BaseWindow()
 
-cmds = [ "^X", "^L", "^N" ]
-cmds_txt = [ "Exit\t", "Topics menu\t", "New topic\t" ]
+cmds = [ "^X", "^L" ]
+cmds_txt = [ "Exit\t", "Topics menu\t" ]
 
 
 def eval_usr_input(key):
@@ -52,13 +52,20 @@ def render_status_bar():
     cursor_x = 0
     cursor_y = win.h - 1
 
-    for i in range(0, len(cmds)):
+    if t.is_menu_active == True:
+        tmp_cmds = t.cmds
+        tmp_cmds_txt = t.cmd_txt
+    else:
+        tmp_cmds = cmds
+        tmp_cmds_txt = cmds_txt
+
+    for i in range(0, len(tmp_cmds)):
         win.stdscr.attron(curses.color_pair(1))
-        win.stdscr.addstr(cursor_y, cursor_x, cmds[i])
+        win.stdscr.addstr(cursor_y, cursor_x, tmp_cmds[i])
         win.stdscr.attroff(curses.color_pair(1))
-        cursor_x += len(cmds[i]) + 1
-        win.stdscr.addstr(cursor_y, cursor_x, cmds_txt[i])
-        cursor_x += len(cmds_txt[i]) + 1
+        cursor_x += len(tmp_cmds[i]) + 1
+        win.stdscr.addstr(cursor_y, cursor_x, tmp_cmds_txt[i])
+        cursor_x += len(tmp_cmds_txt[i]) + 1
 
 
 def render_topics(win):
