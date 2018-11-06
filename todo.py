@@ -8,9 +8,25 @@ import os
 
 from topics import *
 
+
+class BaseWindow:
+
+    def __init__(self):
+        self.h = 0
+        self.w = 0
+
+        self.stdscr = curses.initscr()
+
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+
+
 t = Topics()
+win = BaseWindow()
+
 cmds = [ "^X", "^L", "^N" ]
 cmds_txt = [ "Exit\t", "Topics menu\t", "New topic\t" ]
+
 
 def eval_usr_input(key):
 
@@ -32,6 +48,19 @@ def eval_usr_input(key):
             t.menu_pos = 1
 
 
+def render_status_bar():
+    cursor_x = 0
+    cursor_y = win.h - 1
+
+    for i in range(0, len(cmds)):
+        win.stdscr.attron(curses.color_pair(1))
+        win.stdscr.addstr(cursor_y, cursor_x, cmds[i])
+        win.stdscr.attroff(curses.color_pair(1))
+        cursor_x += len(cmds[i]) + 1
+        win.stdscr.addstr(cursor_y, cursor_x, cmds_txt[i])
+        cursor_x += len(cmds_txt[i]) + 1
+
+
 def render_topics(win):
     i = 1
 
@@ -46,37 +75,21 @@ def render_topics(win):
 
 
 def todo(args):
-    stdscr = curses.initscr()
-
-    stdscr.clear()
-    stdscr.refresh()
-
     usr_in = 0
 
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
-
     while (usr_in != 24):   # 24 = ^X
-        stdscr.clear()
+        win.stdscr.clear()
 
         eval_usr_input(usr_in)
 
-        height, width = stdscr.getmaxyx()
+        win.h, win.w = win.stdscr.getmaxyx()
 
-        # render status bar
-        cursor_x = 0
-        cursor_y = height - 1
-        for i in range(0, len(cmds)):
-            stdscr.attron(curses.color_pair(1))
-            stdscr.addstr(cursor_y, cursor_x, cmds[i])
-            stdscr.attroff(curses.color_pair(1))
-            cursor_x += len(cmds[i]) + 1
-            stdscr.addstr(cursor_y, cursor_x, cmds_txt[i])
-            cursor_x += len(cmds_txt[i]) + 1
+        render_status_bar()
 
-        stdscr.refresh()
+        win.stdscr.refresh()
 
         # render topic list
-        topic_win = curses.newwin(height - 1, width // 4, 0, 0)
+        topic_win = curses.newwin(win.h - 1, win.w // 4, 0, 0)
         topic_win.border()
 
         render_topics(topic_win)
@@ -84,13 +97,13 @@ def todo(args):
         topic_win.refresh()
 
         # render todo list
-        todo_win = curses.newwin(height - 1, (width // 4) * 3, 0, width // 4)
+        todo_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
         todo_win.border()
         todo_win.addstr(1, 1, str(usr_in))
         todo_win.refresh()
 
         # wait for user input
-        usr_in = stdscr.getch()
+        usr_in = win.stdscr.getch()
 
 
 def main():
