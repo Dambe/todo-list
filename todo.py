@@ -34,11 +34,11 @@ def eval_usr_input(key):
             t.is_menu_active = False
         elif (key == 14):                       # ^N
             t.new_topic(win.h, win.w)
-        elif key == ord('j') or key == 258:     # down
+        elif key == ord('j') or key == curses.KEY_DOWN:
             t.menu_pos += 1
             if (t.menu_pos > t.num_topics):
                 t.menu_pos = t.num_topics
-        elif key == ord('k') or key == 259:     # up
+        elif key == ord('k') or key == curses.KEY_UP:
             t.menu_pos -= 1
             if (t.menu_pos < 1):
                 t.menu_pos = 1
