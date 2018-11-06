@@ -47,7 +47,8 @@ class Topics:
         new_t = twin.getstr().decode(encoding="utf-8") + '\n'
 
         # write new topic to file if topic does not exist yet
-        if new_t not in self.topic_names:
+        # and string not empty
+        if (new_t not in self.topic_names) and (new_t != "\n"):
             f = open(self.filepath, "a")
             f.write(new_t)
             f.close()
