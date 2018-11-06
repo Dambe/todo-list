@@ -14,6 +14,10 @@ class Topics:
 
 
     def __init__(self):
+        self.update_topics()
+
+
+    def update_topics(self):
         # get full filepath
         dirname = os.path.dirname(__file__)
         self.filepath = os.path.join(dirname, "topics")
@@ -45,3 +49,5 @@ class Topics:
         f = open(self.filepath, "a")
         f.write(new_t)
         f.close()
+
+        self.update_topics()
