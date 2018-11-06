@@ -56,3 +56,11 @@ class Topics:
             f.close()
 
         self.update_topics()
+
+
+    def delete_topic(self):
+        pass
+
+
+    def rename_topic(self):
+        pass
