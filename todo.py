@@ -29,24 +29,25 @@ cmds_txt = [ "Exit\t", "Topics menu\t" ]
 
 
 def eval_usr_input(key):
-
-    if key == 10:   # RETURN
-        if t.is_menu_active == True:
+    if (t.is_menu_active == True):
+        if (key == 10):                         # RETURN
             t.is_menu_active = False
-    elif key == 12: # ^L
+        elif (key == 14):                       # ^N
+            t.new_topic(win.h, win.w)
+        elif key == ord('j') or key == 258:     # down
+            t.menu_pos += 1
+            if (t.menu_pos > t.num_topics):
+                t.menu_pos = t.num_topics
+        elif key == ord('k') or key == 259:     # up
+            t.menu_pos -= 1
+            if (t.menu_pos < 1):
+                t.menu_pos = 1
+        # no valid key for topic menu
+        return
+
+    if (key == 12):                             # ^L
         t.is_menu_active = True
         t.menu_pos = 1
-    elif key == 14: # ^N
-        t.new_topic(win.h, win.w)
-    elif key == ord('j') or key == 258:      # down
-        t.menu_pos += 1
-        if (t.menu_pos > t.num_topics):
-            t.menu_pos = t.num_topics
-    elif key == ord('k') or key == 259:    # up
-        t.menu_pos -= 1
-        if (t.menu_pos < 1):
-            t.menu_pos = 1
-
 
 def render_status_bar():
     cursor_x = 0
