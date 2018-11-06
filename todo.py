@@ -6,22 +6,43 @@ import datetime
 import time
 import os
 
-cmds = [ "^X", "^A", "^B" ]
-cmds_txt = [ "Exit\t", "A\t", "B\t" ]
+from topics import *
+
+t = Topics()
+cmds = [ "^X", "^L", "^N" ]
+cmds_txt = [ "Exit\t", "Topics menu\t", "New topic\t" ]
+
+def eval_usr_input(key):
+
+    if key == 10:   # RETURN
+        if t.is_menu_active == True:
+            t.is_menu_active = False
+    elif key == 12: # ^L
+        t.is_menu_active = True
+        t.menu_pos = 1
+    elif key == 14: # ^N
+        t.new_topic(80, 80)
+    elif key == ord('j') or key == 258:      # down
+        t.menu_pos += 1
+        if (t.menu_pos > t.num_topics):
+            t.menu_pos = t.num_topics
+    elif key == ord('k') or key == 259:    # up
+        t.menu_pos -= 1
+        if (t.menu_pos < 1):
+            t.menu_pos = 1
 
 
 def render_topics(win):
-    dirname = os.path.dirname(__file__)
-    filename = os.path.join(dirname, "topics")
-
-    fd = open(filename, "r")
-
     i = 1
-    for line in fd:
-        win.addstr(i, 1, line.rstrip())
-        i += 1
 
-    fd.close()
+    for line in t.topic_names:
+        if (i == t.menu_pos) and (t.is_menu_active == True):
+            win.attron(curses.color_pair(1))
+            win.addstr(i, 1, line.rstrip())
+            win.attroff(curses.color_pair(1))
+        else:
+            win.addstr(i, 1, line.rstrip())
+        i += 1
 
 
 def todo(args):
@@ -30,8 +51,6 @@ def todo(args):
     stdscr.clear()
     stdscr.refresh()
 
-    cursor_x = 0
-    cursor_y = 0
     usr_in = 0
 
     curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
@@ -39,10 +58,9 @@ def todo(args):
     while (usr_in != 24):   # 24 = ^X
         stdscr.clear()
 
-        height, width = stdscr.getmaxyx()
+        eval_usr_input(usr_in)
 
-        stdscr.move(0, 0)
-        stdscr.addstr(str(usr_in))
+        height, width = stdscr.getmaxyx()
 
         # render status bar
         cursor_x = 0
@@ -68,7 +86,7 @@ def todo(args):
         # render todo list
         todo_win = curses.newwin(height - 1, (width // 4) * 3, 0, width // 4)
         todo_win.border()
-        todo_win.addstr(1, 1, "This is a test")
+        todo_win.addstr(1, 1, str(usr_in))
         todo_win.refresh()
 
         # wait for user input
