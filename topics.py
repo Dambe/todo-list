@@ -46,9 +46,10 @@ class Topics:
         # python3 problem only
         new_t = twin.getstr().decode(encoding="utf-8") + '\n'
 
-        # write new topic to file
-        f = open(self.filepath, "a")
-        f.write(new_t)
-        f.close()
+        # write new topic to file if topic does not exist yet
+        if new_t not in self.topic_names:
+            f = open(self.filepath, "a")
+            f.write(new_t)
+            f.close()
 
         self.update_topics()
