@@ -24,7 +24,8 @@ class Topics:
 
         # get topics from file
         for line in open(self.filepath, "r"):
-            self.topic_names.append(line)
+            if line not in self.topic_names:
+                self.topic_names.append(line)
 
         # get num of topics
         self.num_topics = len(self.topic_names)
