@@ -60,9 +60,6 @@ def todo(args):
 
         height, width = stdscr.getmaxyx()
 
-        stdscr.move(0, 0)
-        stdscr.addstr(str(usr_in))
-
         # render status bar
         cursor_x = 0
         cursor_y = height - 1
