@@ -84,7 +84,6 @@ def render_topics():
     topic_win = curses.newwin(win.h - 1, win.w // 4, 0, 0)
     topic_win.border()
 
-
     for line in t.topic_names:
         if (i == t.menu_pos) and (t.is_menu_active == True):
             topic_win.attron(curses.color_pair(1))
@@ -94,7 +93,7 @@ def render_topics():
             topic_win.addstr(i, 1, line.rstrip())
         i += 1
 
-        topic_win.refresh()
+    topic_win.refresh()
 
 
 def todo(args):
