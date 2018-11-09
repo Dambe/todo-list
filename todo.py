@@ -7,6 +7,7 @@ import time
 import os
 
 from topics import *
+from lists import *
 
 
 class BaseWindow:
@@ -28,6 +29,7 @@ class BaseWindow:
 
 
 t = Topics()
+l = Lists()
 win = BaseWindow()
 
 cmds = [ "^X", "^L" ]
