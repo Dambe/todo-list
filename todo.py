@@ -8,89 +8,118 @@ import os
 
 from topics import *
 
+
+class BaseWindow:
+
+    def __init__(self):
+        self.h = 0
+        self.w = 0
+
+        self.stdscr = curses.initscr()
+
+        curses.start_color()
+        curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
+
+        self.h, self.w = self.stdscr.getmaxyx()
+
+        # render topic list
+        self.topic_win = curses.newwin((self.h - 1), (self.w // 4), 0, 0)
+        self.topic_win.border()
+
+
 t = Topics()
-cmds = [ "^X", "^L", "^N" ]
-cmds_txt = [ "Exit\t", "Topics menu\t", "New topic\t" ]
+win = BaseWindow()
+
+cmds = [ "^X", "^L" ]
+cmds_txt = [ "Exit\t", "Topics menu\t" ]
+
 
 def eval_usr_input(key):
-
-    if key == 10:   # RETURN
-        if t.is_menu_active == True:
+    if (t.is_menu_active == True):
+        if (key == 10):                         # RETURN
             t.is_menu_active = False
-    elif key == 12: # ^L
+        elif (key == 14):                       # ^N
+            t.new_topic(win.h, win.w)
+        elif (key == 4  ):                      # ^D
+            t.delete_topic()
+        elif key == ord('j') or key == curses.KEY_DOWN:
+            t.menu_pos += 1
+            if (t.menu_pos > t.num_topics):
+                t.menu_pos = t.num_topics
+        elif key == ord('k') or key == curses.KEY_UP:
+            t.menu_pos -= 1
+            if (t.menu_pos < 1):
+                t.menu_pos = 1
+        # no valid key for topic menu
+        return
+
+    if (key == 12):                             # ^L
         t.is_menu_active = True
         t.menu_pos = 1
-    elif key == 14: # ^N
-        t.new_topic(80, 80)
-    elif key == ord('j') or key == 258:      # down
-        t.menu_pos += 1
-        if (t.menu_pos > t.num_topics):
-            t.menu_pos = t.num_topics
-    elif key == ord('k') or key == 259:    # up
-        t.menu_pos -= 1
-        if (t.menu_pos < 1):
-            t.menu_pos = 1
 
 
-def render_topics(win):
+def render_status_bar():
+    cursor_x = 0
+    cursor_y = win.h - 1
+
+    if t.is_menu_active == True:
+        tmp_cmds = t.cmds
+        tmp_cmds_txt = t.cmd_txt
+    else:
+        tmp_cmds = cmds
+        tmp_cmds_txt = cmds_txt
+
+    for i in range(0, len(tmp_cmds)):
+        win.stdscr.attron(curses.color_pair(1))
+        win.stdscr.addstr(cursor_y, cursor_x, tmp_cmds[i])
+        win.stdscr.attroff(curses.color_pair(1))
+        cursor_x += len(tmp_cmds[i]) + 1
+        win.stdscr.addstr(cursor_y, cursor_x, tmp_cmds_txt[i])
+        cursor_x += len(tmp_cmds_txt[i]) + 1
+
+
+def render_topics():
     i = 1
+
+    topic_win = curses.newwin(win.h - 1, win.w // 4, 0, 0)
+    topic_win.border()
 
     for line in t.topic_names:
         if (i == t.menu_pos) and (t.is_menu_active == True):
-            win.attron(curses.color_pair(1))
-            win.addstr(i, 1, line.rstrip())
-            win.attroff(curses.color_pair(1))
+            topic_win.attron(curses.color_pair(1))
+            topic_win.addstr(i, 1, line.rstrip())
+            topic_win.attroff(curses.color_pair(1))
         else:
-            win.addstr(i, 1, line.rstrip())
+            topic_win.addstr(i, 1, line.rstrip())
         i += 1
+
+    topic_win.refresh()
 
 
 def todo(args):
-    stdscr = curses.initscr()
-
-    stdscr.clear()
-    stdscr.refresh()
-
     usr_in = 0
 
-    curses.init_pair(1, curses.COLOR_BLACK, curses.COLOR_WHITE)
-
     while (usr_in != 24):   # 24 = ^X
-        stdscr.clear()
+        win.stdscr.clear()
 
         eval_usr_input(usr_in)
 
-        height, width = stdscr.getmaxyx()
+        win.h, win.w = win.stdscr.getmaxyx()
 
-        # render status bar
-        cursor_x = 0
-        cursor_y = height - 1
-        for i in range(0, len(cmds)):
-            stdscr.attron(curses.color_pair(1))
-            stdscr.addstr(cursor_y, cursor_x, cmds[i])
-            stdscr.attroff(curses.color_pair(1))
-            cursor_x += len(cmds[i]) + 1
-            stdscr.addstr(cursor_y, cursor_x, cmds_txt[i])
-            cursor_x += len(cmds_txt[i]) + 1
+        render_status_bar()
 
-        stdscr.refresh()
+        win.stdscr.refresh()
 
-        # render topic list
-        topic_win = curses.newwin(height - 1, width // 4, 0, 0)
-        topic_win.border()
-
-        render_topics(topic_win)
-
-        topic_win.refresh()
+        render_topics()
 
         # render todo list
-        todo_win = curses.newwin(height - 1, (width // 4) * 3, 0, width // 4)
+        todo_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
         todo_win.border()
         todo_win.addstr(1, 1, str(usr_in))
         todo_win.refresh()
 
         # wait for user input
-        usr_in = stdscr.getch()
+        usr_in = win.stdscr.getch()
 
 
 def main():

@@ -12,9 +12,16 @@ class Topics:
     is_menu_active = False
     menu_pos = 0
 
+    cmds = [ "^N", "^D", "^R" ]
+    cmd_txt = [ "New topic\t", "Delete topic\t", "Rename topic\t" ]
 
     def __init__(self):
         self.update_topics()
+
+
+    def clear_topics(self):
+        self.num_topics = 0
+        self.topic_names = []
 
 
     def update_topics(self):
@@ -54,3 +61,26 @@ class Topics:
             f.close()
 
         self.update_topics()
+
+
+    def delete_topic(self):
+        new_topics = []
+
+        deltopic = self.topic_names[self.menu_pos - 1]
+
+        for t in self.topic_names:
+            if (t != deltopic):
+                new_topics.append(t)
+
+        f = open(self.filepath, "w")
+        for nt in new_topics:
+            f.write(nt)
+        f.close()
+
+        self.menu_pos -= 1
+        self.clear_topics()
+        self.update_topics()
+
+
+    def rename_topic(self):
+        pass
