@@ -123,14 +123,13 @@ def todo(args):
         win.stdscr.refresh()
         win.h, win.w = win.stdscr.getmaxyx()
 
-        eval_usr_input(usr_in)
-
         render_status_bar()
         render_topics()
         render_lists(usr_in)
 
         # wait for user input
         usr_in = win.stdscr.getch()
+        eval_usr_input(usr_in)
 
 
 def main():
