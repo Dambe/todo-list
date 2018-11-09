@@ -99,9 +99,17 @@ def render_topics():
 
 
 def render_lists(usr_in):
+    i = 1
+
     list_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
     list_win.border()
-    list_win.addstr(1, 1, str(usr_in))
+    list_win.addstr(i, 1, str(usr_in))
+    i += 1
+
+    for line in l.items:
+        list_win.addstr(i, 1, line.rstrip())
+        i += 1
+
     list_win.refresh()
 
 
