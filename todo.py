@@ -98,10 +98,11 @@ def render_topics():
     topic_win.refresh()
 
 
-def render_lists():
-    todo_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
-    todo_win.border()
-    todo_win.refresh()
+def render_lists(usr_in):
+    list_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
+    list_win.border()
+    list_win.addstr(1, 1, str(usr_in))
+    list_win.refresh()
 
 
 def todo(args):
@@ -116,7 +117,7 @@ def todo(args):
 
         render_status_bar()
         render_topics()
-        render_lists()
+        render_lists(usr_in)
 
         # wait for user input
         usr_in = win.stdscr.getch()
