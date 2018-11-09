@@ -107,15 +107,12 @@ def todo(args):
 
     while (usr_in != 24):   # 24 = ^X
         win.stdscr.clear()
+        win.stdscr.refresh()
+        win.h, win.w = win.stdscr.getmaxyx()
 
         eval_usr_input(usr_in)
 
-        win.h, win.w = win.stdscr.getmaxyx()
-
         render_status_bar()
-
-        win.stdscr.refresh()
-
         render_topics()
         render_lists()
 
