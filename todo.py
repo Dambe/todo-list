@@ -7,6 +7,7 @@ import time
 import os
 
 from topics import *
+from lists import *
 
 
 class BaseWindow:
@@ -28,10 +29,11 @@ class BaseWindow:
 
 
 t = Topics()
+l = Lists()
 win = BaseWindow()
 
-cmds = [ "^X", "^L" ]
-cmds_txt = [ "Exit\t", "Topics menu\t" ]
+cmds = [ "^X", "^L", "^E" ]
+cmds_txt = [ "Exit\t", "Topics menu\t", "Edit\t" ]
 
 
 def eval_usr_input(key):
@@ -40,7 +42,7 @@ def eval_usr_input(key):
             t.is_menu_active = False
         elif (key == 14):                       # ^N
             t.new_topic(win.h, win.w)
-        elif (key == 4  ):                      # ^D
+        elif (key == 4):                        # ^D
             t.delete_topic()
         elif key == ord('j') or key == curses.KEY_DOWN:
             t.menu_pos += 1
@@ -51,7 +53,28 @@ def eval_usr_input(key):
             if (t.menu_pos < 1):
                 t.menu_pos = 1
         # no valid key for topic menu
-        return
+        else:
+            return
+
+    if (l.is_menu_active == True):
+        if(key == 4):                           # ^D
+            l.delete_item()
+        elif (key == 14):                       # ^N
+            l.new_item(win.h, win.w)
+        elif key == ord('j') or key == curses.KEY_DOWN:
+            l.menu_pos += 1
+            if (l.menu_pos > l.num_items):
+                l.menu_pos = l.num_items
+        elif key == ord('k') or key == curses.KEY_UP:
+            l.menu_pos -= 1
+            if (l.menu_pos < 1):
+                l.menu_pos = 1
+        # no valid key for topic menu
+        else:
+            return
+
+    if (key == 5):                              # ^E
+        l.is_menu_active = True
 
     if (key == 12):                             # ^L
         t.is_menu_active = True
@@ -96,30 +119,41 @@ def render_topics():
     topic_win.refresh()
 
 
+def render_lists(usr_in):
+    i = 1
+
+    list_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
+    list_win.border()
+    list_win.addstr(i, 1, str(usr_in))
+    i += 1
+
+    for line in l.items:
+        if (i == l.menu_pos) and (l.is_menu_active == True):
+            list_win.attron(curses.color_pair(1))
+            list_win.addstr(i, 1, line.rstrip())
+            list_win.attroff(curses.color_pair(1))
+        else:
+            list_win.addstr(i, 1, line.rstrip())
+        i += 1
+
+    list_win.refresh()
+
+
 def todo(args):
     usr_in = 0
 
     while (usr_in != 24):   # 24 = ^X
         win.stdscr.clear()
-
-        eval_usr_input(usr_in)
-
+        win.stdscr.refresh()
         win.h, win.w = win.stdscr.getmaxyx()
 
         render_status_bar()
-
-        win.stdscr.refresh()
-
         render_topics()
-
-        # render todo list
-        todo_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
-        todo_win.border()
-        todo_win.addstr(1, 1, str(usr_in))
-        todo_win.refresh()
+        render_lists(usr_in)
 
         # wait for user input
         usr_in = win.stdscr.getch()
+        eval_usr_input(usr_in)
 
 
 def main():
