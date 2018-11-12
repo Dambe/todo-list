@@ -53,7 +53,8 @@ def eval_usr_input(key):
             if (t.menu_pos < 1):
                 t.menu_pos = 1
         # no valid key for topic menu
-        return
+        else:
+            return
 
     if (l.is_menu_active == True):
         if (key == 14):
