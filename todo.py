@@ -63,6 +63,8 @@ def eval_usr_input(key):
             return
 
     if (l.is_menu_active == True):
+        if (key == 10):                         # RETURN
+            l.is_menu_active = False
         if(key == 4):                           # ^D
             l.delete_item()
         elif (key == 14):                       # ^N
