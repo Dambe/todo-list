@@ -77,3 +77,7 @@ class Lists:
         self.menu_pos -= 1
         self.clear_items()
         self.update_items()
+
+
+    def rename_item(self):
+        pass
