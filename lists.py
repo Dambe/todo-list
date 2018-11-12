@@ -14,15 +14,15 @@ class Lists:
 
 
     def __init__(self):
-        self.update_topics()
+        self.update_items()
 
 
-    def clear_topics(self):
+    def clear_items(self):
         self.num_items = 0
         self.items = []
 
 
-    def update_topics(self):
+    def update_items(self):
         dirname = os.path.dirname(__file__)
         self.filepath = os.path.join(dirname, "dummy")
 
@@ -57,7 +57,7 @@ class Lists:
             f.write(new_i)
             f.close()
 
-        self.update_topics()
+        self.update_items()
 
 
     def delete_item(self):
@@ -75,5 +75,5 @@ class Lists:
         f.close()
 
         self.menu_pos -= 1
-        self.clear_topics() #TODO rename
-        self.update_topics() #TODO rename
+        self.clear_items()
+        self.update_items()
