@@ -57,7 +57,9 @@ def eval_usr_input(key):
             return
 
     if (l.is_menu_active == True):
-        if (key == 14):
+        if(key == 4):                           # ^D
+            l.delete_item()
+        elif (key == 14):                       # ^N
             l.new_item(win.h, win.w)
         elif key == ord('j') or key == curses.KEY_DOWN:
             l.menu_pos += 1
