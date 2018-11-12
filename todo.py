@@ -52,6 +52,9 @@ def eval_usr_input(key):
             t.menu_pos -= 1
             if (t.menu_pos < 1):
                 t.menu_pos = 1
+        elif key == ord('l') or key == curses.KEY_RIGHT:
+            t.is_menu_active = False
+            l.is_menu_active = True
         # no valid key for topic menu
         else:
             return
@@ -69,6 +72,9 @@ def eval_usr_input(key):
             l.menu_pos -= 1
             if (l.menu_pos < 1):
                 l.menu_pos = 1
+        elif key == ord('h') or key == curses.KEY_LEFT:
+            l.is_menu_active = False
+            t.is_menu_active = True
         # no valid key for topic menu
         else:
             return
