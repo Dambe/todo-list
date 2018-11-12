@@ -58,6 +58,17 @@ def eval_usr_input(key):
     if (l.is_menu_active == True):
         if (key == 14):
             l.new_item(win.h, win.w)
+        elif key == ord('j') or key == curses.KEY_DOWN:
+            l.menu_pos += 1
+            if (l.menu_pos > l.num_items):
+                l.menu_pos = l.num_items
+        elif key == ord('k') or key == curses.KEY_UP:
+            l.menu_pos -= 1
+            if (l.menu_pos < 1):
+                l.menu_pos = 1
+        # no valid key for topic menu
+        else:
+            return
 
     if (key == 5):                              # ^E
         l.is_menu_active = True
@@ -114,7 +125,12 @@ def render_lists(usr_in):
     i += 1
 
     for line in l.items:
-        list_win.addstr(i, 1, line.rstrip())
+        if (i == l.menu_pos) and (l.is_menu_active == True):
+            list_win.attron(curses.color_pair(1))
+            list_win.addstr(i, 1, line.rstrip())
+            list_win.attroff(curses.color_pair(1))
+        else:
+            list_win.addstr(i, 1, line.rstrip())
         i += 1
 
     list_win.refresh()
