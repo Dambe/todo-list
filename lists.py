@@ -71,5 +71,9 @@ class Lists:
 
         f = open(self.filepath, "w")
         for ni in new_items:
-            f.write(nt)
+            f.write(ni)
         f.close()
+
+        self.menu_pos -= 1
+        self.clear_topics() #TODO rename
+        self.update_topics() #TODO rename
