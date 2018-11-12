@@ -32,8 +32,8 @@ t = Topics()
 l = Lists()
 win = BaseWindow()
 
-cmds = [ "^X", "^L", "^E" ]
-cmds_txt = [ "Exit\t", "Topics menu\t", "Edit\t" ]
+cmds = [ "^X", "^E" ]
+cmds_txt = [ "Exit\t", "Edit\t" ]
 
 
 def eval_usr_input(key):
@@ -75,10 +75,6 @@ def eval_usr_input(key):
 
     if (key == 5):                              # ^E
         l.is_menu_active = True
-
-    if (key == 12):                             # ^L
-        t.is_menu_active = True
-        t.menu_pos = 1
 
 
 def render_status_bar():
