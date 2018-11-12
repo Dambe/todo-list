@@ -35,6 +35,9 @@ win = BaseWindow()
 cmds = [ "^X", "^E" ]
 cmds_txt = [ "Exit\t", "Edit\t" ]
 
+cmds_win_active = [ "^N", "^D", "^R" ]
+cmds_win_active_txt = [ "New\t", "Delete\t", "Rename\t" ]
+
 
 def eval_usr_input(key):
     if (t.is_menu_active == True):
@@ -87,9 +90,9 @@ def render_status_bar():
     cursor_x = 0
     cursor_y = win.h - 1
 
-    if t.is_menu_active == True:
-        tmp_cmds = t.cmds
-        tmp_cmds_txt = t.cmd_txt
+    if t.is_menu_active == True or l.is_menu_active == True:
+        tmp_cmds = cmds_win_active
+        tmp_cmds_txt = cmds_win_active_txt
     else:
         tmp_cmds = cmds
         tmp_cmds_txt = cmds_txt

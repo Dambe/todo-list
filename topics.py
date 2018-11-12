@@ -12,8 +12,6 @@ class Topics:
     is_menu_active = False
     menu_pos = 0
 
-    cmds = [ "^N", "^D", "^R" ]
-    cmd_txt = [ "New topic\t", "Delete topic\t", "Rename topic\t" ]
 
     def __init__(self):
         self.update_topics()
