@@ -42,7 +42,7 @@ def eval_usr_input(key):
             t.is_menu_active = False
         elif (key == 14):                       # ^N
             t.new_topic(win.h, win.w)
-        elif (key == 4  ):                      # ^D
+        elif (key == 4):                        # ^D
             t.delete_topic()
         elif key == ord('j') or key == curses.KEY_DOWN:
             t.menu_pos += 1
