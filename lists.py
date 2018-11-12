@@ -10,7 +10,7 @@ class Lists:
     num_items = 0
     items = []
     is_menu_active = False
-    menu_pos = 0
+    menu_pos = 1
 
 
     def __init__(self):

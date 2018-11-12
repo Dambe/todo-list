@@ -10,7 +10,7 @@ class Topics:
     num_topics = 0
     topic_names = []
     is_menu_active = False
-    menu_pos = 0
+    menu_pos = 1
 
 
     def __init__(self):
