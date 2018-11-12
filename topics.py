@@ -10,10 +10,8 @@ class Topics:
     num_topics = 0
     topic_names = []
     is_menu_active = False
-    menu_pos = 0
+    menu_pos = 1
 
-    cmds = [ "^N", "^D", "^R" ]
-    cmd_txt = [ "New topic\t", "Delete topic\t", "Rename topic\t" ]
 
     def __init__(self):
         self.update_topics()

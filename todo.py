@@ -32,8 +32,11 @@ t = Topics()
 l = Lists()
 win = BaseWindow()
 
-cmds = [ "^X", "^L", "^E" ]
-cmds_txt = [ "Exit\t", "Topics menu\t", "Edit\t" ]
+cmds = [ "^X", "^E" ]
+cmds_txt = [ "Exit\t", "Edit\t" ]
+
+cmds_win_active = [ "^N", "^D", "^R" ]
+cmds_win_active_txt = [ "New\t", "Delete\t", "Rename\t" ]
 
 
 def eval_usr_input(key):
@@ -52,11 +55,16 @@ def eval_usr_input(key):
             t.menu_pos -= 1
             if (t.menu_pos < 1):
                 t.menu_pos = 1
+        elif key == ord('l') or key == curses.KEY_RIGHT:
+            t.is_menu_active = False
+            l.is_menu_active = True
         # no valid key for topic menu
         else:
             return
 
     if (l.is_menu_active == True):
+        if (key == 10):                         # RETURN
+            l.is_menu_active = False
         if(key == 4):                           # ^D
             l.delete_item()
         elif (key == 14):                       # ^N
@@ -69,6 +77,9 @@ def eval_usr_input(key):
             l.menu_pos -= 1
             if (l.menu_pos < 1):
                 l.menu_pos = 1
+        elif key == ord('h') or key == curses.KEY_LEFT:
+            l.is_menu_active = False
+            t.is_menu_active = True
         # no valid key for topic menu
         else:
             return
@@ -76,18 +87,14 @@ def eval_usr_input(key):
     if (key == 5):                              # ^E
         l.is_menu_active = True
 
-    if (key == 12):                             # ^L
-        t.is_menu_active = True
-        t.menu_pos = 1
 
-
-def render_status_bar():
+def render_status_bar(usr_in):
     cursor_x = 0
     cursor_y = win.h - 1
 
-    if t.is_menu_active == True:
-        tmp_cmds = t.cmds
-        tmp_cmds_txt = t.cmd_txt
+    if t.is_menu_active == True or l.is_menu_active == True:
+        tmp_cmds = cmds_win_active
+        tmp_cmds_txt = cmds_win_active_txt
     else:
         tmp_cmds = cmds
         tmp_cmds_txt = cmds_txt
@@ -99,6 +106,9 @@ def render_status_bar():
         cursor_x += len(tmp_cmds[i]) + 1
         win.stdscr.addstr(cursor_y, cursor_x, tmp_cmds_txt[i])
         cursor_x += len(tmp_cmds_txt[i]) + 1
+
+    # user key, for debugging only
+    win.stdscr.addstr(cursor_y, cursor_x, str(usr_in))
 
 
 def render_topics():
@@ -119,13 +129,11 @@ def render_topics():
     topic_win.refresh()
 
 
-def render_lists(usr_in):
+def render_lists():
     i = 1
 
     list_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
     list_win.border()
-    list_win.addstr(i, 1, str(usr_in))
-    i += 1
 
     for line in l.items:
         if (i == l.menu_pos) and (l.is_menu_active == True):
@@ -147,9 +155,9 @@ def todo(args):
         win.stdscr.refresh()
         win.h, win.w = win.stdscr.getmaxyx()
 
-        render_status_bar()
+        render_status_bar(usr_in)
         render_topics()
-        render_lists(usr_in)
+        render_lists()
 
         # wait for user input
         usr_in = win.stdscr.getch()
