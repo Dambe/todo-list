@@ -10,6 +10,8 @@ class Lists:
     num_items = 0
     items = []
     is_menu_active = False
+    menu_pos = 0
+
 
     def __init__(self):
         self.update_topics()
@@ -56,3 +58,18 @@ class Lists:
             f.close()
 
         self.update_topics()
+
+
+    def delete_item(self):
+        new_items = []
+
+        delitem = self.items[self.menu_pos - 1]
+
+        for i in self.items:
+            if (i != delitem):
+                new_items.append(i)
+
+        f = open(self.filepath, "w")
+        for ni in new_items:
+            f.write(nt)
+        f.close()
