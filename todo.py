@@ -41,7 +41,7 @@ cmds_win_active_txt = [ "New\t", "Delete\t", "Rename\t" ]
 
 def eval_usr_input(key):
     if (t.is_menu_active == True):
-        if (key == 10):                         # RETURN
+        if (key == 27):                         # ESC
             t.is_menu_active = False
         elif (key == 14):                       # ^N
             t.new_topic(win.h, win.w)
@@ -63,7 +63,7 @@ def eval_usr_input(key):
             return
 
     if (l.is_menu_active == True):
-        if (key == 10):                         # RETURN
+        if (key == 27):                         # ESC
             l.is_menu_active = False
         if(key == 4):                           # ^D
             l.delete_item()
