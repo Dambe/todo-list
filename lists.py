@@ -15,6 +15,19 @@ class Item:
         pass
 
 
+    def get_item(self):
+        txt = ""
+
+        if (self.done):
+            txt = "* "
+        else:
+            txt = "  "
+
+        txt = txt + "| " + self.description + " | " + self.due_date + "\n"
+
+        return txt
+
+
 class List(Item):
     dirname = ""
     lists = []
@@ -119,4 +132,11 @@ class List(Item):
         # python3 problem only
         new_item = twin.getstr().decode(encoding="utf-8")
         self.items_test.append(Item(new_item))
-        pass
+
+        new_item_parsed = self.items_test[0].get_item()
+        filepath = os.path.join(self.dirname, self.lists[self.topic_menu_pos - 1])
+        f = open(filepath, "a")
+        f.write(new_item_parsed)
+        f.close()
+
+        self.show_list()
