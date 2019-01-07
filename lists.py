@@ -40,7 +40,7 @@ class List(Item):
         # get full folderpath
         self.dirname = os.path.join(os.path.dirname(__file__), "lists/")
         self.update_lists()
-        self.open_list()
+        self.show_list()
 
 
     def clear_lists(self):
@@ -96,5 +96,22 @@ class List(Item):
                 self.items.append(line)
 
 
-    def rename_list(self):
-        pass
+    def rename_list(self, height, width):
+        old_file = os.path.join(self.dirname, self.lists[self.topic_menu_pos - 1])
+
+        twin = curses.newwin(3, 50, (height // 2), (width // 2) - 25)
+        twin.border()
+        curses.echo()
+        y, x = twin.getyx()
+        twin.addstr(y + 1, x + 1, "New name: ")
+
+        # getstr() returns a byte object rather than a string
+        # this means, it must be decoded first
+        # python3 problem only
+        new_name = twin.getstr().decode(encoding="utf-8")
+        new_file = os.path.join(self.dirname, new_name)
+
+        os.rename(old_file, new_file)
+
+        self.clear_lists()
+        self.update_lists()

@@ -40,6 +40,8 @@ def eval_usr_input(key):
             l.new_list(win.h, win.w)
         elif (key == 4):                        # ^D
             l.delete_list()
+        elif (key == 5):                        # ^E
+            l.rename_list(win.h, win.w)
         elif key == ord('j') or key == curses.KEY_DOWN:
             l.topic_menu_pos += 1
             if (l.topic_menu_pos > len(l.lists)):
@@ -78,9 +80,6 @@ def eval_usr_input(key):
         # no valid key for topic menu
         else:
             return
-
-    if (key == 5):                              # ^E
-        l.is_menu_active = True
 
 
 def render_status_bar(usr_in):
