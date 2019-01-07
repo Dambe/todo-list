@@ -4,80 +4,97 @@
 import curses
 import os
 
+class Item:
+    text = ""
+    done = False
+    due_date = ""
+    prio = 0
 
-class Lists:
-    filepath = ""
-    num_items = 0
+    def __init__(self):
+        pass
+
+
+    def new_item(self):
+        pass
+
+
+    def delete_item(self):
+        pass
+
+
+    def edit_item(self):
+        pass
+
+
+class List(Item):
+    dirname = ""
+    lists = []
     items = []
-    is_menu_active = False
-    menu_pos = 1
+    is_topic_menu_active = True
+    is_list_menu_active = False
+    topic_menu_pos = 1
+    list_menu_pos = 1
 
 
     def __init__(self):
-        self.update_items()
+        # get full folderpath
+        self.dirname = os.path.join(os.path.dirname(__file__), "lists/")
+        self.update_lists()
+        self.open_list()
 
 
-    def clear_items(self):
-        self.num_items = 0
-        self.items = []
+    def clear_lists(self):
+        self.lists = []
 
 
-    def update_items(self):
-        dirname = os.path.dirname(__file__)
-        self.filepath = os.path.join(dirname, "dummy")
-
-        # get todo items from file
-        for line in open(self.filepath, "r"):
-            if line not in self.items:
-                self.items.append(line)
-
-        # get num of todo items
-        self.num_items = len(self.items)
+    def update_lists(self):
+        # get list names
+        for filename in sorted(os.listdir(self.dirname)):
+             self.lists.append(filename)
 
 
-    def new_item(self, height, width):
-        new_i = ""
+    def new_list(self, height, width):
+        new_l = ""
 
-        iwin = curses.newwin(3, 50, (height // 2), (width // 2) - 25)
-        iwin.border()
+        twin = curses.newwin(3, 50, (height // 2), (width // 2) - 25)
+        twin.border()
         curses.echo()
-        y, x = iwin.getyx()
-        iwin.addstr(y + 1, x + 1, "New item: ")
-        iwin.refresh()
+        y, x = twin.getyx()
+        twin.addstr(y + 1, x + 1, "New list: ")
+        twin.refresh()
 
         # getstr() returns a byte object rather than a string
         # this means, it must be decoded first
         # python3 problem only
-        new_i = iwin.getstr().decode(encoding="utf-8") + '\n'
+        new_l = twin.getstr().decode(encoding="utf-8")
 
-        # write new topic to file if topic does not exist yet
-        # and string not empty
-        if (new_i not in self.items) and (new_i != "\n"):
-            f = open(self.filepath, "a")
-            f.write(new_i)
+        # create a new file
+        filepath = filepath = os.path.join(self.dirname, new_l)
+        if (new_l not in self.lists) and (new_l != "\n"):
+            f = open(filepath, "w+")
             f.close()
 
-        self.update_items()
+        self.clear_lists()
+        self.update_lists()
 
 
-    def delete_item(self):
-        new_items = []
+    def delete_list(self):
+        filepath = os.path.join(self.dirname, self.lists[self.topic_menu_pos - 1])
+        # TODO: double confirmation before delete
+        os.remove(filepath)
 
-        delitem = self.items[self.menu_pos - 1]
-
-        for i in self.items:
-            if (i != delitem):
-                new_items.append(i)
-
-        f = open(self.filepath, "w")
-        for ni in new_items:
-            f.write(ni)
-        f.close()
-
-        self.menu_pos -= 1
-        self.clear_items()
-        self.update_items()
+        self.topic_menu_pos -= 1
+        self.clear_lists()
+        self.update_lists()
 
 
-    def rename_item(self):
+    def show_list(self):
+        filepath = os.path.join(self.dirname, self.lists[self.topic_menu_pos - 1])
+        self.items = []
+        for line in open(filepath, "r"):
+            if line not in self.items:
+                self.items.append(line)
+
+
+    def rename_list(self):
         pass
