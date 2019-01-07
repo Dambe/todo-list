@@ -6,7 +6,6 @@ import datetime
 import time
 import os
 
-from topics import *
 from lists import *
 
 
@@ -28,58 +27,54 @@ class BaseWindow:
         self.topic_win.border()
 
 
-t = Topics()
-l = Lists()
+l = List()
 win = BaseWindow()
 
-cmds = [ "^X", "^E" ]
-cmds_txt = [ "Exit\t", "Edit\t" ]
-
-cmds_win_active = [ "^N", "^D", "^R" ]
-cmds_win_active_txt = [ "New\t", "Delete\t", "Rename\t" ]
+cmds = [ "^N", "^D", "^E", "^X" ]
+cmds_txt = [ "New\t", "Delete\t", "Edit\t", "Exit\t" ]
 
 
 def eval_usr_input(key):
-    if (t.is_menu_active == True):
-        if (key == 27):                         # ESC
-            t.is_menu_active = False
-        elif (key == 14):                       # ^N
-            t.new_topic(win.h, win.w)
+    if (l.is_topic_menu_active == True):
+        if (key == 14):                         # ^N
+            l.new_list(win.h, win.w)
         elif (key == 4):                        # ^D
-            t.delete_topic()
+            l.delete_list()
         elif key == ord('j') or key == curses.KEY_DOWN:
-            t.menu_pos += 1
-            if (t.menu_pos > t.num_topics):
-                t.menu_pos = t.num_topics
+            l.topic_menu_pos += 1
+            if (l.topic_menu_pos > len(l.lists)):
+                l.topic_menu_pos = len(l.lists)
+            l.show_list()
         elif key == ord('k') or key == curses.KEY_UP:
-            t.menu_pos -= 1
-            if (t.menu_pos < 1):
-                t.menu_pos = 1
+            l.topic_menu_pos -= 1
+            if (l.topic_menu_pos < 1):
+                l.topic_menu_pos = 1
+            l.show_list()
         elif key == ord('l') or key == curses.KEY_RIGHT:
-            t.is_menu_active = False
-            l.is_menu_active = True
+            l.is_topic_menu_active = False
+            l.is_list_menu_active = True
         # no valid key for topic menu
         else:
             return
 
-    if (l.is_menu_active == True):
+    if (l.is_list_menu_active == True):
         if (key == 27):                         # ESC
-            l.is_menu_active = False
+            l.is_list_menu_active = False
         if(key == 4):                           # ^D
             l.delete_item()
         elif (key == 14):                       # ^N
             l.new_item(win.h, win.w)
         elif key == ord('j') or key == curses.KEY_DOWN:
-            l.menu_pos += 1
-            if (l.menu_pos > l.num_items):
-                l.menu_pos = l.num_items
+            l.list_menu_pos += 1
+            if (l.list_menu_pos > len(l.items)):
+                l.list_menu_pos = len(l.items)
         elif key == ord('k') or key == curses.KEY_UP:
-            l.menu_pos -= 1
-            if (l.menu_pos < 1):
-                l.menu_pos = 1
+            l.list_menu_pos -= 1
+            if (l.list_menu_pos < 1):
+                l.list_menu_pos = 1
         elif key == ord('h') or key == curses.KEY_LEFT:
-            l.is_menu_active = False
-            t.is_menu_active = True
+            l.is_list_menu_active = False
+            l.is_topic_menu_active = True
         # no valid key for topic menu
         else:
             return
@@ -92,9 +87,9 @@ def render_status_bar(usr_in):
     cursor_x = 0
     cursor_y = win.h - 1
 
-    if t.is_menu_active == True or l.is_menu_active == True:
-        tmp_cmds = cmds_win_active
-        tmp_cmds_txt = cmds_win_active_txt
+    if l.is_topic_menu_active == True or l.is_list_menu_active == True:
+        tmp_cmds = cmds
+        tmp_cmds_txt = cmds_txt
     else:
         tmp_cmds = cmds
         tmp_cmds_txt = cmds_txt
@@ -117,8 +112,8 @@ def render_topics():
     topic_win = curses.newwin(win.h - 1, win.w // 4, 0, 0)
     topic_win.border()
 
-    for line in t.topic_names:
-        if (i == t.menu_pos) and (t.is_menu_active == True):
+    for line in l.lists:
+        if (i == l.topic_menu_pos) and (l.is_topic_menu_active == True):
             topic_win.attron(curses.color_pair(1))
             topic_win.addstr(i, 1, line.rstrip())
             topic_win.attroff(curses.color_pair(1))
@@ -136,7 +131,7 @@ def render_lists():
     list_win.border()
 
     for line in l.items:
-        if (i == l.menu_pos) and (l.is_menu_active == True):
+        if (i == l.list_menu_pos) and (l.is_list_menu_active == True):
             list_win.attron(curses.color_pair(1))
             list_win.addstr(i, 1, line.rstrip())
             list_win.attroff(curses.color_pair(1))
