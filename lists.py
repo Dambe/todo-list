@@ -5,24 +5,13 @@ import curses
 import os
 
 class Item:
-    text = ""
+    description = ""
     done = False
     due_date = ""
     prio = 0
 
-    def __init__(self):
-        pass
-
-
-    def new_item(self):
-        pass
-
-
-    def delete_item(self):
-        pass
-
-
-    def edit_item(self):
+    def __init__(self, desc):
+        self.description = desc
         pass
 
 
@@ -30,6 +19,7 @@ class List(Item):
     dirname = ""
     lists = []
     items = []
+    items_test = []
     is_topic_menu_active = True
     is_list_menu_active = False
     topic_menu_pos = 1
@@ -115,3 +105,18 @@ class List(Item):
 
         self.clear_lists()
         self.update_lists()
+
+
+    def new_item(self, height, width):
+        twin = curses.newwin(3, 50, (height // 2), (width // 2) - 25)
+        twin.border()
+        curses.echo()
+        y, x = twin.getyx()
+        twin.addstr(y + 1, x + 1, "Description: ")
+
+        # getstr() returns a byte object rather than a string
+        # this means, it must be decoded first
+        # python3 problem only
+        new_item = twin.getstr().decode(encoding="utf-8")
+        self.items_test.append(Item(new_item))
+        pass
