@@ -129,13 +129,14 @@ def render_lists():
     list_win = curses.newwin(win.h - 1, (win.w // 4) * 3, 0, win.w // 4)
     list_win.border()
 
-    for line in l.items:
+    for item in l.items_test:
+        txt = item.get_item()
         if (i == l.list_menu_pos) and (l.is_list_menu_active == True):
             list_win.attron(curses.color_pair(1))
-            list_win.addstr(i, 1, line.rstrip())
+            list_win.addstr(i, 1, txt.rstrip())
             list_win.attroff(curses.color_pair(1))
         else:
-            list_win.addstr(i, 1, line.rstrip())
+            list_win.addstr(i, 1, txt.rstrip())
         i += 1
 
     list_win.refresh()
