@@ -99,6 +99,7 @@ class List(Item):
         self.topic_menu_pos -= 1
         self.clear_lists()
         self.update_lists()
+        self.show_list()
 
 
     def show_list(self):
