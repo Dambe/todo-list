@@ -7,25 +7,35 @@ import os
 class Item:
     description = ""
     done = False
-    due_date = ""
+    due_date = " "
     prio = 0
 
-    def __init__(self, desc):
+    def __init__(self, desc = ""):
         self.description = desc
         pass
 
 
     def get_item(self):
-        txt = ""
+        txt = "*" if self.done else " "
 
-        if (self.done):
-            txt = "* "
+        return txt + " | " + self.description + " | " + self.due_date + "\n"
+
+
+    def parse_line(self, line):
+        # remove \n and split the string
+        s = line[:-1].split(" | ")
+        # TODO: change to 4, because of prio
+        if (len(s) < 3):
+            return
+
+        if (s[0] == "*"):
+            self.done = True
         else:
-            txt = "  "
+            self.done = False
 
-        txt = txt + "| " + self.description + " | " + self.due_date + "\n"
-
-        return txt
+        self.description = s[1]
+        self.due_date = s[2]
+        pass
 
 
 class List(Item):
@@ -94,9 +104,13 @@ class List(Item):
     def show_list(self):
         filepath = os.path.join(self.dirname, self.lists[self.topic_menu_pos - 1])
         self.items = []
+        self.items_test = []
         for line in open(filepath, "r"):
             if line not in self.items:
                 self.items.append(line)
+                self.items_test.append(Item())
+                self.items_test[len(self.items_test) - 1].parse_line(line)
+                pass
 
 
     def rename_list(self, height, width):
@@ -133,7 +147,7 @@ class List(Item):
         new_item = twin.getstr().decode(encoding="utf-8")
         self.items_test.append(Item(new_item))
 
-        new_item_parsed = self.items_test[0].get_item()
+        new_item_parsed = self.items_test[-1].get_item()
         filepath = os.path.join(self.dirname, self.lists[self.topic_menu_pos - 1])
         f = open(filepath, "a")
         f.write(new_item_parsed)
